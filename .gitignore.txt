@@ -1,0 +1,42 @@
+# --- Java / Maven / Gradle ---
+/target/
+/build/
+/out/
+*.class
+*.jar
+*.war
+*.ear
+/.settings/
+/.classpath
+/.project
+/.gradle/
+/.gradle/
+/mvnw.cmd
+/.mvn/wrapper/maven-wrapper.jar
+
+# NetBeans
+nbproject/private/
+nbbuild/
+dist/
+
+# --- Node / Angular ---
+/node_modules/
+/dist/
+/npm-debug.log
+/yarn-error.log
+/.angular/
+
+# --- IDE ---
+.vscode/
+.idea/
+*.iml
+
+# --- Env / keys / logs ---
+.env
+*.env
+*.log
+logs/
+
+# --- OS ---
+.DS_Store
+Thumbs.db
