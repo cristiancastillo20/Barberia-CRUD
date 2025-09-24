@@ -1,0 +1,23 @@
+<nav class="sidebar-nav">
+  <div class="logo-area">
+    <i class="fas fa-cut logo-icon"></i> <span class="logo-text">Barberia al Minuto</span> </div>
+
+  <ul class="nav-list">
+    @for (group of navigationItems; track group.id) {
+      @if (group.type === 'group') {
+        <li class="nav-group-caption">
+          <label>{{ group.title }}</label>
+        </li>
+        @for (item of group.children; track item.id) {
+          @if (item.type === 'item') {
+            <li class="nav-item">
+              <a [routerLink]="item.url" routerLinkActive="active" class="nav-link">
+                <i [class]="item.icon"></i> <span class="nav-text">{{ item.title }}</span>
+              </a>
+            </li>
+          }
+        }
+      }
+    }
+  </ul>
+</nav>

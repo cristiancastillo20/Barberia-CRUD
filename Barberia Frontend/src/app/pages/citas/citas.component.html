@@ -1,0 +1,140 @@
+<div class="container">
+  <div class="card">
+    <div class="card-header">
+      <div class="row">
+        <div class="col">
+          <button class="btn btn-outline-primary btn-sm" (click)="openCitaModal('C')" title="Registrar una nueva cita">
+            <i class="fa fa-plus"></i>
+            &nbsp;Nueva Cita
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col">
+          <div class="card">
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-stripped">
+                  <thead>
+                    <tr>
+                      <th>ID Cita</th>
+                      <th>Fecha</th>
+                      <th>Hora</th>
+                      <th>Cliente</th>
+                      <th>Barbero</th>
+                      <th>Servicio</th>
+                      <th>Precio Servicio</th>
+                      <th class="text-center">Opciones</th>
+                    </tr>
+                  </thead>
+                  <tbody *ngIf="citas.length === 0">
+                    <tr>
+                      <td colspan="8" class="text-center">No hay registros de citas disponibles</td>
+                    </tr>
+                  </tbody>
+                  <tbody *ngIf="citas.length > 0">
+                    <tr *ngFor="let cita of citas">
+                      <td>{{ cita.idCita }}</td>
+                      <td>{{ cita.fecha | date:'dd/MM/yyyy' }}</td>
+                      <td>{{ cita.hora }}</td>
+                      <td>{{ cita.cliente.nombre }} {{ cita.cliente.apellido }}</td>
+                      <td>{{ cita.barbero.nombre }} {{ cita.barbero.apellido }}</td>
+                      <td>{{ cita.servicio.nombreServicio }}</td>
+                      <td>{{ cita.servicio.precio | currency:'USD':'symbol':'1.2-2' }}</td>
+                      <td class="text-center">
+                        <button class="btn btn-outline-primary btn-sm" (click)="abrirModoEdicion(cita)" title="Editar cita">
+                          <i class="fa fa-edit"></i>
+                        </button>
+                        <button class="btn btn-danger btn-sm" (click)="eliminarCita(cita.idCita!)" title="Eliminar cita">
+                          <i class="fa fa-trash"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="citaModal" tabindex="-1" aria-labelledby="citaModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="citaModalLabel">{{titleModal}}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="cerrarModal()"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="citaForm">
+          <input type="hidden" formControlName="idCita">
+
+          <div class="mb-3">
+            <label for="fecha" class="form-label">Fecha <span class="text-danger">*</span></label>
+            <input type="date" formControlName="fecha" class="form-control" id="fecha">
+            <div *ngIf="citaForm.get('fecha')?.invalid && (citaForm.get('fecha')?.dirty || citaForm.get('fecha')?.touched)" class="text-danger">
+              La fecha es requerida.
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="hora" class="form-label">Hora <span class="text-danger">*</span></label>
+            <input type="time" formControlName="hora" class="form-control" id="hora">
+            <div *ngIf="citaForm.get('hora')?.invalid && (citaForm.get('hora')?.dirty || citaForm.get('hora')?.touched)" class="text-danger">
+              La hora es requerida.
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="idCliente" class="form-label">Cliente <span class="text-danger">*</span></label>
+            <select formControlName="idCliente" class="form-select" id="idCliente">
+              <option [ngValue]="null" disabled>Seleccione un cliente</option>
+              <option *ngFor="let cliente of clientes" [ngValue]="cliente.idCliente">
+                {{ cliente.nombre }} {{ cliente.apellido }}
+              </option>
+            </select>
+            <div *ngIf="citaForm.get('idCliente')?.invalid && (citaForm.get('idCliente')?.dirty || citaForm.get('idCliente')?.touched)" class="text-danger">
+              El cliente es requerido.
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="idBarbero" class="form-label">Barbero <span class="text-danger">*</span></label>
+            <select formControlName="idBarbero" class="form-select" id="idBarbero">
+              <option [ngValue]="null" disabled>Seleccione un barbero</option>
+              <option *ngFor="let barbero of barberos" [ngValue]="barbero.idBarbero">
+                {{ barbero.nombre }} {{ barbero.apellido }}
+              </option>
+            </select>
+            <div *ngIf="citaForm.get('idBarbero')?.invalid && (citaForm.get('idBarbero')?.dirty || citaForm.get('idBarbero')?.touched)" class="text-danger">
+              El barbero es requerido.
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="idServicio" class="form-label">Servicio <span class="text-danger">*</span></label>
+            <select formControlName="idServicio" class="form-select" id="idServicio">
+              <option [ngValue]="null" disabled>Seleccione un servicio</option>
+              <option *ngFor="let servicio of servicios" [ngValue]="servicio.idServicio">
+                {{ servicio.nombreServicio }} - {{ servicio.precio | currency:'USD':'symbol':'1.2-2' }}
+              </option>
+            </select>
+            <div *ngIf="citaForm.get('idServicio')?.invalid && (citaForm.get('idServicio')?.dirty || citaForm.get('idServicio')?.touched)" class="text-danger">
+              El servicio es requerido.
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="cerrarModal()">Cerrar</button>
+        <button type="button" class="btn btn-warning" (click)="limpiarFormulario()">Limpiar</button>
+        <button type="button" class="btn btn-primary" (click)="guardarActualizarCita()" [disabled]="!citaForm.valid">{{titleModal}}</button>
+      </div>
+    </div>
+  </div>
+</div>

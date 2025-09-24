@@ -1,0 +1,115 @@
+<div class="container">
+  <div class="card">
+    <div class="card-header">
+      <div class="row">
+        <div class="col">
+          <button class="btn btn-outline-primary btn-sm" (click)="openEmpleadoModal('C')" title="Crear un nuevo empleado">
+            <i class="fa fa-plus"></i>
+            &nbsp;Nuevo
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col">
+          <div class="card">
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-stripped">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Nombre</th>
+                      <th>Apellido</th>
+                      <th>Especialidad</th>
+                      <th>Sede</th>
+                      <th class="text-center">Opciones</th>
+                    </tr>
+                  </thead>
+                  <tbody *ngIf="empleados.length === 0">
+                    <tr>
+                      <td colspan="6" class="text-center">No hay registros de empleados disponibles</td>
+                    </tr>
+                  </tbody>
+                  <tbody *ngIf="empleados.length > 0">
+                    <tr *ngFor="let empleado of empleados">
+                      <td>{{ empleado.idBarbero }}</td>
+                      <td>{{ empleado.nombre }}</td>
+                      <td>{{ empleado.apellido }}</td>
+                      <td>{{ empleado.especialidad }}</td>
+                      <td>{{ empleado.sede.nombre }}</td> <td class="text-center">
+                        <button class="btn btn-outline-primary btn-sm" (click)="abrirModoEdicion(empleado)" title="Editar empleado">
+                          <i class="fa fa-edit"></i>
+                        </button>
+                        <button class="btn btn-danger btn-sm" (click)="eliminarEmpleado(empleado.idBarbero!)" title="Eliminar empleado">
+                          <i class="fa fa-trash"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="empleadoModal" tabindex="-1" aria-labelledby="empleadoModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="empleadoModalLabel">{{titleModal}}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="cerrarModal()"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="empleadoForm">
+          <input type="hidden" formControlName="idBarbero">
+
+          <div class="mb-3">
+            <label for="nombre" class="form-label">Nombre</label>
+            <input type="text" formControlName="nombre" class="form-control" id="nombre">
+            <div *ngIf="empleadoForm.get('nombre')?.invalid && (empleadoForm.get('nombre')?.dirty || empleadoForm.get('nombre')?.touched)" class="text-danger">
+              El nombre es requerido.
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="apellido" class="form-label">Apellido</label>
+            <input type="text" formControlName="apellido" class="form-control" id="apellido">
+            <div *ngIf="empleadoForm.get('apellido')?.invalid && (empleadoForm.get('apellido')?.dirty || empleadoForm.get('apellido')?.touched)" class="text-danger">
+              El apellido es requerido.
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="especialidad" class="form-label">Especialidad</label>
+            <input type="text" formControlName="especialidad" class="form-control" id="especialidad">
+          </div>
+
+          <div class="mb-3">
+            <label for="idSede" class="form-label">Sede</label>
+            <select formControlName="idSede" class="form-select" id="idSede">
+              <option [ngValue]="null" disabled>Seleccione una sede</option>
+              <option *ngFor="let sede of sedes" [ngValue]="sede.idSede">
+                {{ sede.nombre }}
+              </option>
+            </select>
+            <div *ngIf="empleadoForm.get('idSede')?.invalid && (empleadoForm.get('idSede')?.dirty || empleadoForm.get('idSede')?.touched)" class="text-danger">
+              La sede es requerida.
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="cerrarModal()">Cerrar</button>
+        <button type="button" class="btn btn-warning" (click)="limpiarFormulario()">Limpiar</button>
+        <button type="button" class="btn btn-primary" (click)="guardarActualizarEmpleado()" [disabled]="!empleadoForm.valid">{{titleModal}}</button>
+      </div>
+    </div>
+  </div>
+</div>

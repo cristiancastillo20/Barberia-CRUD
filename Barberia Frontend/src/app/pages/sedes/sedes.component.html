@@ -1,0 +1,104 @@
+<div class="container">
+  <div class="card">
+    <div class="card-header">
+      <div class="row">
+        <div class="col">
+          <button class="btn btn-outline-primary btn-sm" (click)="openSedeModal('C')" title="Crear una sede nueva">
+            <i class="fa fa-plus"></i>
+            &nbsp;Nuevo
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col">
+          <div class="card">
+            <div class="card-body">
+              <div class="table table-responsive">
+                <table class="table table-responsive table-stripped">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Nombre</th>
+                      <th>Dirección</th>
+                      <th>Teléfono</th>
+                      <th class="text-center">Opciones</th>
+                    </tr>
+                  </thead>
+                  <tbody *ngIf="sedes.length === 0">
+                    <tr>
+                      <td colspan="5" class="text-center">No hay registros disponibles</td>
+                    </tr>
+                  </tbody>
+                  <tbody *ngIf="sedes.length > 0">
+                    <tr *ngFor="let sede of sedes">
+                      <td>{{ sede.idSede }}</td>
+                      <td>{{ sede.nombre }}</td>
+                      <td>{{ sede.direccion }}</td>
+                      <td>{{ sede.telefono }}</td>
+                      <td class="text-center">
+                        <button class="btn btn-outline-primary btn-sm" (click)="abrirModoEdicion(sede)" title="Editar sede">
+                          <i class="fa fa-edit"></i>
+                        </button>
+                        <button class="btn btn-danger btn-sm" (click)="eliminarSede(sede.idSede!)" title="Eliminar sede">
+                          <i class="fa fa-trash"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="sedeModal" tabindex="-1" aria-labelledby="sedeModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="sedeModalLabel">{{titleModal}}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="cerrarModal()"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="sedeForm">
+          <input type="hidden" formControlName="idSede">
+
+          <div class="mb-3">
+            <label for="nombre" class="form-label">Nombre</label>
+            <input type="text" formControlName="nombre" class="form-control" id="nombre">
+            <div *ngIf="sedeForm.get('nombre')?.invalid && (sedeForm.get('nombre')?.dirty || sedeForm.get('nombre')?.touched)" class="text-danger">
+              El nombre es requerido.
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="direccion" class="form-label">Dirección</label>
+            <input type="text" formControlName="direccion" class="form-control" id="direccion">
+            <div *ngIf="sedeForm.get('direccion')?.invalid && (sedeForm.get('direccion')?.dirty || sedeForm.get('direccion')?.touched)" class="text-danger">
+              La dirección es requerida.
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="telefono" class="form-label">Teléfono</label>
+            <input type="text" formControlName="telefono" class="form-control" id="telefono">
+            <div *ngIf="sedeForm.get('telefono')?.invalid && (sedeForm.get('telefono')?.dirty || sedeForm.get('telefono')?.touched)" class="text-danger">
+              El teléfono es requerido y debe tener entre 7 y 10 dígitos.
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="cerrarModal()">Cerrar</button>
+        <button type="button" class="btn btn-warning" (click)="limpiarFormulario()">Limpiar</button>
+        <button type="button" class="btn btn-primary" (click)="guardarActualizarSede()" [disabled]="!sedeForm.valid">{{titleModal}}</button>
+      </div>
+    </div>
+  </div>
+</div>

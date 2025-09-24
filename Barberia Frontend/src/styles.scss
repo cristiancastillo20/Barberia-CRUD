@@ -1,0 +1,14 @@
+/* You can add global styles to this file, and also import other style files */
+/* styles.scss */
+
+// Importa Bootstrap completo. Asegúrate de que 'bootstrap' esté instalado (npm install bootstrap).
+@import 'bootstrap/scss/bootstrap';
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%; /* Asegura que html y body ocupen el 100% de la altura */
+  font-family: 'Roboto', sans-serif; /* Puedes cambiar la fuente */
+}
+
+/* Puedes añadir tus estilos globales adicionales aquí debajo */

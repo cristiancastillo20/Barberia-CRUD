@@ -1,0 +1,130 @@
+<div class="container">
+  <div class="card">
+    <div class="card-header">
+      <div class="row">
+        <div class="col">
+          <button class="btn btn-outline-primary btn-sm" (click)="openPagoModal('C')" title="Registrar un nuevo pago">
+            <i class="fa fa-plus"></i>
+            &nbsp;Nuevo Pago
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col">
+          <div class="card">
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-stripped">
+                  <thead>
+                    <tr>
+                      <th>ID Pago</th>
+                      <th>Monto</th>
+                      <th>Fecha de Pago</th>
+                      <th>Método de Pago</th>
+                      <th>Cita (ID)</th>
+                      <th>Cliente</th>
+                      <th>Barbero</th>
+                      <th>Servicio</th>
+                      <th class="text-center">Opciones</th>
+                    </tr>
+                  </thead>
+                  <tbody *ngIf="pagos.length === 0">
+                    <tr>
+                      <td colspan="9" class="text-center">No hay registros de pagos disponibles</td>
+                    </tr>
+                  </tbody>
+                  <tbody *ngIf="pagos.length > 0">
+                    <tr *ngFor="let pago of pagos">
+                      <td>{{ pago.idPago }}</td>
+                      <td>{{ pago.monto | currency:'USD':'symbol':'1.2-2' }}</td>
+                      <td>{{ pago.fechaPago | date:'dd/MM/yyyy' }}</td>
+                      <td>{{ pago.metodoPago }}</td>
+                      <td>{{ pago.cita.idCita }}</td>
+                      <td>{{ pago.cita.cliente.nombre }} {{ pago.cita.cliente.apellido }}</td>
+                      <td>{{ pago.cita.barbero.nombre }} {{ pago.cita.barbero.apellido }}</td>
+                      <td>{{ pago.cita.servicio.nombreServicio }}</td>
+                      <td class="text-center">
+                        <button class="btn btn-outline-primary btn-sm" (click)="abrirModoEdicion(pago)" title="Editar pago">
+                          <i class="fa fa-edit"></i>
+                        </button>
+                        <button class="btn btn-danger btn-sm" (click)="eliminarPago(pago.idPago!)" title="Eliminar pago">
+                          <i class="fa fa-trash"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="pagoModal" tabindex="-1" aria-labelledby="pagoModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="pagoModalLabel">{{titleModal}}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="cerrarModal()"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="pagoForm">
+          <input type="hidden" formControlName="idPago">
+
+          <div class="mb-3">
+            <label for="monto" class="form-label">Monto <span class="text-danger">*</span></label>
+            <input type="number" formControlName="monto" class="form-control" id="monto" step="0.01">
+            <div *ngIf="pagoForm.get('monto')?.invalid && (pagoForm.get('monto')?.dirty || pagoForm.get('monto')?.touched)" class="text-danger">
+              El monto es requerido y debe ser mayor que 0.
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="fechaPago" class="form-label">Fecha de Pago <span class="text-danger">*</span></label>
+            <input type="date" formControlName="fechaPago" class="form-control" id="fechaPago">
+            <div *ngIf="pagoForm.get('fechaPago')?.invalid && (pagoForm.get('fechaPago')?.dirty || pagoForm.get('fechaPago')?.touched)" class="text-danger">
+              La fecha de pago es requerida.
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="metodoPago" class="form-label">Método de Pago <span class="text-danger">*</span></label>
+            <select formControlName="metodoPago" class="form-select" id="metodoPago">
+              <option [ngValue]="null" disabled>Seleccione un método</option>
+              <option *ngFor="let metodo of metodosPago" [ngValue]="metodo">
+                {{ metodo }}
+              </option>
+            </select>
+            <div *ngIf="pagoForm.get('metodoPago')?.invalid && (pagoForm.get('metodoPago')?.dirty || pagoForm.get('metodoPago')?.touched)" class="text-danger">
+              El método de pago es requerido.
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="idCita" class="form-label">Cita Asociada <span class="text-danger">*</span></label>
+            <select formControlName="idCita" class="form-select" id="idCita">
+              <option [ngValue]="null" disabled>Seleccione una cita</option>
+              <option *ngFor="let cita of citas" [ngValue]="cita.idCita">
+                ID: {{ cita.idCita }} - {{ cita.fecha | date:'dd/MM/yyyy' }} {{ cita.hora }} - Cliente: {{ cita.cliente.nombre }} {{ cita.cliente.apellido }} - Barbero: {{ cita.barbero.nombre }} - Servicio: {{ cita.servicio.nombreServicio }}
+              </option>
+            </select>
+            <div *ngIf="pagoForm.get('idCita')?.invalid && (pagoForm.get('idCita')?.dirty || pagoForm.get('idCita')?.touched)" class="text-danger">
+              La cita es requerida.
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="cerrarModal()">Cerrar</button>
+        <button type="button" class="btn btn-warning" (click)="limpiarFormulario()">Limpiar</button>
+        <button type="button" class="btn btn-primary" (click)="guardarActualizarPago()" [disabled]="!pagoForm.valid">{{titleModal}}</button>
+      </div>
+    </div>
+  </div>
+</div>

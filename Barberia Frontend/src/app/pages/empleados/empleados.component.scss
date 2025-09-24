@@ -1,0 +1,42 @@
+/* src/app/pages/empleados/empleados.component.scss */
+.container {
+  padding-top: 20px;
+}
+
+.card {
+  margin-bottom: 20px;
+}
+
+.table-responsive {
+  max-height: 600px; /* Ajusta esto si necesitas un scroll vertical en la tabla */
+  overflow-y: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 8px 12px;
+  border: 1px solid #dee2e6;
+  text-align: left;
+  vertical-align: middle;
+}
+
+th {
+  background-color: #f8f9fa;
+  font-weight: bold;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.btn-sm {
+  margin-right: 5px;
+}
+
+.modal-footer {
+  justify-content: flex-end;
+}

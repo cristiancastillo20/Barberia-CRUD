@@ -1,0 +1,101 @@
+<div class="container">
+  <div class="card">
+    <div class="card-header">
+      <div class="row">
+        <div class="col">
+          <button class="btn btn-outline-primary btn-sm" (click)="openServicioModal('C')" title="Crear un servicio nuevo">
+            <i class="fa fa-plus"></i>
+            &nbsp;Nuevo
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col">
+          <div class="card">
+            <div class="card-body">
+              <div class="table table-responsive">
+                <table class="table table-responsive table-stripped">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Nombre</th>
+                      <th>Descripción</th>
+                      <th>Precio</th>
+                      <th class="text-center">Opciones</th>
+                    </tr>
+                  </thead>
+                  <tbody *ngIf="servicios.length === 0">
+                    <tr>
+                      <td colspan="5" class="text-center">No hay registros disponibles</td> </tr>
+                  </tbody>
+                  <tbody *ngIf="servicios.length > 0">
+                    <tr *ngFor="let servicio of servicios">
+                      <td>{{ servicio.idServicio }}</td>
+                      <td>{{ servicio.nombreServicio }}</td> <td>{{ servicio.descripcion }}</td>
+                      <td>{{ servicio.precio | currency:'USD':'symbol':'1.2-2' }}</td>
+                      <td class="text-center">
+                        <button class="btn btn-outline-primary btn-sm" (click)="abrirModoEdicion(servicio)" title="Editar servicio">
+                          <i class="fa fa-edit"></i>
+                        </button>
+                        <button class="btn btn-danger btn-sm" (click)="eliminarServicio(servicio.idServicio!)" title="Eliminar servicio">
+                          <i class="fa fa-trash"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="servicioModal" tabindex="-1" aria-labelledby="servicioModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="servicioModalLabel">{{titleModal}}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="cerrarModal()"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="servicioForm">
+          <input type="hidden" formControlName="idServicio">
+
+          <div class="mb-3">
+            <label for="nombreServicio" class="form-label">Nombre</label> <input type="text" formControlName="nombreServicio" class="form-control" id="nombreServicio"> <div *ngIf="servicioForm.get('nombreServicio')?.invalid && (servicioForm.get('nombreServicio')?.dirty || servicioForm.get('nombreServicio')?.touched)" class="text-danger">
+              El nombre es requerido.
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="descripcion" class="form-label">Descripción</label>
+            <textarea formControlName="descripcion" class="form-control" id="descripcion" rows="3"></textarea>
+            <div *ngIf="servicioForm.get('descripcion')?.invalid && (servicioForm.get('descripcion')?.dirty || servicioForm.get('descripcion')?.touched)" class="text-danger">
+              La descripción es requerida.
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="precio" class="form-label">Precio</label>
+            <input type="number" formControlName="precio" class="form-control" id="precio" step="0.01">
+            <div *ngIf="servicioForm.get('precio')?.invalid && (servicioForm.get('precio')?.dirty || servicioForm.get('precio')?.touched)" class="text-danger">
+              El precio es requerido y debe ser un número positivo.
+            </div>
+          </div>
+
+          </form>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="cerrarModal()">Cerrar</button>
+        <button type="button" class="btn btn-warning" (click)="limpiarFormulario()">Limpiar</button>
+        <button type="button" class="btn btn-primary" (click)="guardarActualizarServicio()" [disabled]="!servicioForm.valid">{{titleModal}}</button>
+      </div>
+    </div>
+  </div>
+</div>

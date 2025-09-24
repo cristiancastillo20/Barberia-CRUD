@@ -1,0 +1,29 @@
+.main-container {
+  display: flex; /* Usa Flexbox para colocar los elementos en una fila */
+  height: 100vh; /* Asegura que el contenedor ocupe el 100% de la altura de la ventana */
+  width: 100vw;  /* Asegura que el contenedor ocupe el 100% del ancho de la ventana */
+}
+
+.sidebar {
+  width: 280px; /* Define un ancho fijo para la barra lateral (ajusta si lo necesitas) */
+  background-color: #34495e; /* Color de fondo oscuro, similar a tu imagen */
+  color: #ecf0f1; /* Color de texto claro para la barra lateral */
+  padding: 0; /* Sin padding inicial, lo manejaremos con el componente de navegación */
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2); /* Sombra sutil a la derecha */
+  flex-shrink: 0; /* Evita que la barra lateral se encoja si el contenido es demasiado ancho */
+  display: flex; /* Usa flex para organizar el contenido interno del sidebar (logo, menu) */
+  flex-direction: column; /* Organiza los elementos en columna */
+}
+
+.content-area {
+  flex-grow: 1; /* Permite que el área de contenido ocupe todo el espacio restante */
+  background-color: #f8f9fa; /* Color de fondo claro para el área de contenido */
+  padding: 20px; /* Padding alrededor del contenido de la página */
+  overflow-y: auto; /* Permite desplazamiento vertical si el contenido excede la altura */
+}
+
+/* Estilos básicos para el body de la página para eliminar márgenes predeterminados */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif; /* Puedes cambiar la fuente si lo deseas */
+}

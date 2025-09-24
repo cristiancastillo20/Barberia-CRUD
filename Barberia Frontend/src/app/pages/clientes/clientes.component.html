@@ -1,0 +1,121 @@
+<div class="container">
+  <div class="card">
+    <div class="card-header">
+      <div class="row">
+        <div class="col">
+          <button class="btn btn-outline-primary btn-sm" (click)="openClienteModal('C')" title="Registrar un nuevo cliente">
+            <i class="fa fa-plus"></i>
+            &nbsp;Nuevo Cliente
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col">
+          <div class="card">
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-stripped">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Nombre</th>
+                      <th>Apellido</th>
+                      <th>Teléfono</th>
+                      <th>Correo</th>
+                      <th>Fecha Registro</th>
+                      <th class="text-center">Opciones</th>
+                    </tr>
+                  </thead>
+                  <tbody *ngIf="clientes.length === 0">
+                    <tr>
+                      <td colspan="7" class="text-center">No hay registros de clientes disponibles</td>
+                    </tr>
+                  </tbody>
+                  <tbody *ngIf="clientes.length > 0">
+                    <tr *ngFor="let cliente of clientes">
+                      <td>{{ cliente.idCliente }}</td>
+                      <td>{{ cliente.nombre }}</td>
+                      <td>{{ cliente.apellido }}</td>
+                      <td>{{ cliente.telefono }}</td>
+                      <td>{{ cliente.correo || 'N/A' }}</td> <td>{{ cliente.fechaRegistro | date:'dd/MM/yyyy' }}</td> <td class="text-center">
+                        <button class="btn btn-outline-primary btn-sm" (click)="abrirModoEdicion(cliente)" title="Editar cliente">
+                          <i class="fa fa-edit"></i>
+                        </button>
+                        <button class="btn btn-danger btn-sm" (click)="eliminarCliente(cliente.idCliente!)" title="Eliminar cliente">
+                          <i class="fa fa-trash"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="clienteModal" tabindex="-1" aria-labelledby="clienteModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="clienteModalLabel">{{titleModal}}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="cerrarModal()"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="clienteForm">
+          <input type="hidden" formControlName="idCliente">
+
+          <div class="mb-3">
+            <label for="nombre" class="form-label">Nombre <span class="text-danger">*</span></label>
+            <input type="text" formControlName="nombre" class="form-control" id="nombre">
+            <div *ngIf="clienteForm.get('nombre')?.invalid && (clienteForm.get('nombre')?.dirty || clienteForm.get('nombre')?.touched)" class="text-danger">
+              El nombre es requerido.
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="apellido" class="form-label">Apellido <span class="text-danger">*</span></label>
+            <input type="text" formControlName="apellido" class="form-control" id="apellido">
+            <div *ngIf="clienteForm.get('apellido')?.invalid && (clienteForm.get('apellido')?.dirty || clienteForm.get('apellido')?.touched)" class="text-danger">
+              El apellido es requerido.
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="telefono" class="form-label">Teléfono <span class="text-danger">*</span></label>
+            <input type="text" formControlName="telefono" class="form-control" id="telefono" placeholder="Ej: 3001234567">
+            <div *ngIf="clienteForm.get('telefono')?.invalid && (clienteForm.get('telefono')?.dirty || clienteForm.get('telefono')?.touched)" class="text-danger">
+              <span *ngIf="clienteForm.get('telefono')?.errors?.['required']">El teléfono es requerido.</span>
+              <span *ngIf="clienteForm.get('telefono')?.errors?.['pattern']">El formato del teléfono no es válido (7 a 15 dígitos numéricos).</span>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="correo" class="form-label">Correo Electrónico</label>
+            <input type="email" formControlName="correo" class="form-control" id="correo" placeholder="ejemplo@dominio.com">
+            <div *ngIf="clienteForm.get('correo')?.invalid && (clienteForm.get('correo')?.dirty || clienteForm.get('correo')?.touched)" class="text-danger">
+              <span *ngIf="clienteForm.get('correo')?.errors?.['email']">Ingrese un formato de correo electrónico válido.</span>
+            </div>
+          </div>
+
+          <div class="mb-3" *ngIf="modoFormulario === 'E'">
+            <label for="fechaRegistro" class="form-label">Fecha de Registro</label>
+            <input type="text" formControlName="fechaRegistro" class="form-control" id="fechaRegistro" readonly>
+          </div>
+
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="cerrarModal()">Cerrar</button>
+        <button type="button" class="btn btn-warning" (click)="limpiarFormulario()">Limpiar</button>
+        <button type="button" class="btn btn-primary" (click)="guardarActualizarCliente()" [disabled]="!clienteForm.valid">{{titleModal}}</button>
+      </div>
+    </div>
+  </div>
+</div>
